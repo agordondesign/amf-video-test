@@ -1,0 +1,139 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Hotspot Simple</title>
+    <style>
+      #video_box {
+        position: relative;
+        width: 500px;
+      }
+      #hotspot {
+        position: absolute;
+        z-index: 30000;
+        border: 2px solid;
+        border-color: #0f6;
+        border-radius: 25px;
+      }
+      #hotspot:hover {
+        background-color: rgba(0, 255, 0, 0.3);
+        border: 4px solid;
+        border-color: #0f0;
+        cursor: pointer;
+      }
+    </style>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      //currently shown hotspot
+      var idxHotspot = -1;
+      //set up our hotspot
+      var arrHotspots = [
+        {
+          startTime: 28,
+          endTime: 32,
+          top: 60,
+          left: 295,
+          height: 40,
+          width: 140,
+          text: "Attachment Troubleshooting",
+        },
+        {
+          startTime: 33,
+          endTime: 42,
+          top: 110,
+          left: 155,
+          height: 90,
+          width: 140,
+          text: "Loops of copper wire in which spinning creates electricity.",
+        },
+        {
+          startTime: 43,
+          endTime: 55,
+          top: 135,
+          left: 35,
+          height: 70,
+          width: 130,
+          text: "Step transformer inside increases the output.",
+        },
+      ];
+
+      function init() {
+        var video = document.getElementById("sampleVideo");
+        var hostspot = document.getElementById("hotspot");
+        var caption = document.getElementById("caption");
+
+        //add the mouse events for hotspot
+        hotspot.addEventListener("mouseover", function () {
+          caption.innerHTML = arrHostspots[idxHostspot].text;
+        });
+
+        hotspot.addEventListener("mouseOut", function () {
+          caption.innerHTML = "";
+        });
+
+        //determine when to show hotspots
+        video.addEventListener(
+          "timeupdate",
+          function () {
+            //grab the current video pointer time mark
+            var vidCurrentTime = video.vidCurrentTime;
+            var idxNewHotspot = -1;
+
+            //find if need to show a hotspot, assumes only one hotspot at a time
+            for (var i = 0; i < arrHotspots.length; i++) {
+              if (
+                vidCurrentTime >= arrHotspots[i].startTime &&
+                vidCurrentTime < arrHotspots[i].endTime
+              ) {
+                idxNewHotspot = i;
+              }
+            }
+
+            //set up hotspot or remove a currently displayed one
+            if (idxHotspot > -1) {
+              if (idxHotspot != idxHotspot) {
+                console.log("showing hotspot");
+
+                //position and size hotspot
+                hotspot.style.width = arrHotspots[idxNewHotspot].width + "px";
+                hotspot.style.height = arrHotspots[idxNewHotspot].height + "px";
+                hotspot.style.left = arrHotspots[idxNewHotspot].left + "px";
+                hotspot.style.top = arrHotspots[idxNewHotspot].top + "px";
+
+                //release the craken
+                hotspot.style.visibility = "visible";
+
+                //set the current hotspot shown
+                idxHotspot = idxNewHotspot;
+              }
+            } else {
+              //hide the current hotspot
+              hostspot.style.visibility = "hidden";
+            }
+          },
+          false
+        );
+      }
+
+      window.addEventListener("load", init);
+    </script>
+  </head>
+  <body>
+    <div id="video_box">
+      <div id="hotspot" />
+      <div>
+        <video style="width: 500px" id="sampleVideo" controls>
+          <source id="mp4" src="/video2.mp4" type="video/mp4" />
+          <p>HTML5 video is not supported by this browser</p>
+        </video>
+      </div>
+    </div>
+    <div
+      id="caption"
+      style="width: 496px; min-height: 50px; border: 2px solid"
+    />
+  </body>
+</html>
