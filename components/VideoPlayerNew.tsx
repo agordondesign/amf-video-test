@@ -201,6 +201,7 @@ const HotspotVideo = () => {
 				<video
 					ref={video2Ref}
 					controls
+					playsInline
 					preload="auto"
 					className="absolute w-full max-w-4xl z-20"
 					style={{ visibility: 'hidden' }}
@@ -225,7 +226,7 @@ const HotspotVideo = () => {
 
 				{/** BASE VIDEO */}
 				{/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
-				<video ref={videoRef} controls className="w-full max-w-4xl">
+				<video ref={videoRef} controls playsInline className="w-full max-w-4xl">
 					<source src="/video1.mp4" type="video/mp4" />
 					<track
 						src="/captions/video2.vtt"
