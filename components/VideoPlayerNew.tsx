@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -45,6 +46,7 @@ const HotspotVideo = () => {
 	const descriptionRef = useRef<HTMLDivElement>(null);
 	const labelRef = useRef<HTMLDivElement>(null);
 	const closeRef = useRef<HTMLDivElement>(null);
+	const fullscreenToggleRef = useRef<HTMLButtonElement>(null);
 	const [currentHotspotIdx, setCurrentHotspotIdx] = useState(-1);
 
 	useEffect(() => {
@@ -54,6 +56,31 @@ const HotspotVideo = () => {
 		const label = labelRef.current;
 		const close = closeRef.current;
 		const description = descriptionRef.current;
+		const fullscreenToggle = fullscreenToggleRef.current;
+
+		const toggleFullScreen = async () => {
+			console.log('toggleFullScreen called');
+			const container = document.getElementById('video-player-container');
+			if (!container) return;
+
+			const fullscreenApi =
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				(container as any).requestFullscreen ||
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				(container as any).webkitRequestFullscreen ||
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				(container as any).mozRequestFullScreen ||
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				(container as any).msRequestFullscreen;
+
+			if (!document.fullscreenElement && fullscreenApi) {
+				fullscreenApi.call(container);
+				console.log('works');
+			} else {
+				document.exitFullscreen?.();
+				console.log('exits');
+			}
+		};
 
 		const handleTimeUpdate = () => {
 			const currentTime = video?.currentTime || 0;
@@ -174,6 +201,10 @@ const HotspotVideo = () => {
 		hotspot?.addEventListener('click', handleMouseClick);
 		video2?.addEventListener('ended', handleVideo2Ended);
 		close?.addEventListener('click', handleClose);
+		document.addEventListener('DOMContentLoaded', toggleFullScreen);
+		if (fullscreenToggle) {
+			fullscreenToggle.addEventListener('click', toggleFullScreen);
+		}
 
 		return () => {
 			video?.removeEventListener('timeupdate', handleTimeUpdate);
@@ -182,12 +213,30 @@ const HotspotVideo = () => {
 			hotspot?.addEventListener('click', handleMouseClick);
 			video2?.removeEventListener('ended', handleVideo2Ended);
 			close?.removeEventListener('click', handleClose);
+			document.removeEventListener('DOMContentLoaded', toggleFullScreen);
+			if (fullscreenToggle) {
+				fullscreenToggle.removeEventListener('click', toggleFullScreen);
+			}
 		};
 	}, [currentHotspotIdx]);
 
 	return (
-		<div className="flex flex-col items-start gap-4">
-			<div className="relative w-full max-w-4xl">
+		<div
+			className="flex flex-col items-start gap-4 border-2 border-gray-600 p-4 bg-gray-800 text-white"
+			id="video-player-container"
+		>
+			<div id="video-player-subcontainer" className="relative w-full max-w-4xl">
+				{/** FULLSCREEN TOGGLE BUTTON */}
+				<div className="pointer-events-auto z-50">
+					<button
+						ref={fullscreenToggleRef}
+						id="fullscreen-toggle-btn"
+						type="button"
+						className="text-gray-400 border-2 border-pink-500 hover:border-lime-500 rounded-full px-2 py-1 absolute z-30 top-4 right-4"
+					>
+						Fullscreen
+					</button>
+				</div>
 				{/** HOTSPOT VIDEO CLOSE BUTTON */}
 				<div
 					ref={closeRef}

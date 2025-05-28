@@ -28,3 +28,20 @@ body {
 video::-webkit-media-controls-fullscreen-button {
 	display: none !important;
 }
+
+#video-player-container:-webkit-full-screen video {
+	height: 100vh;
+	width: 100vw;
+}
+
+#video-player-container:fullscreen video {
+	height: 100vh;
+	width: 100vw;
+}
+
+#video-player-container:fullscreen #video-player-subcontainer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	max-width: 100%;
+}
