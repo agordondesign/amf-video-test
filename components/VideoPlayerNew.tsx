@@ -227,7 +227,7 @@ const HotspotVideo = () => {
 		>
 			<div id="video-player-subcontainer" className="relative w-full max-w-4xl">
 				{/** FULLSCREEN TOGGLE BUTTON */}
-				<div className="pointer-events-auto z-50">
+				<div className="pointer-events-auto z-50 hidden">
 					<button
 						ref={fullscreenToggleRef}
 						id="fullscreen-toggle-btn"
