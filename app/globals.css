@@ -20,7 +20,7 @@
 }
 
 body {
-	background: var(--background);
+	//background: var(--background);
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -44,4 +44,16 @@ video::-webkit-media-controls-fullscreen-button {
 	width: 100%;
 	height: 100%;
 	max-width: 100%;
+}
+
+.element {
+	opacity: 0; /* Initially transparent */
+	visibility: hidden; /* Initially hidden */
+	transition: opacity 0.3s ease-in, visibility 0s linear 0.3s; /* Transition for opacity and delayed visibility */
+}
+
+.element.visible {
+	opacity: 1; /* Fade in */
+	visibility: visible; /* Become visible immediately */
+	transition-delay: 0s; /* Override delay when becoming visible */
 }

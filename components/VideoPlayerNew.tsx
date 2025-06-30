@@ -1,43 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-
-const hotspots = [
-	{
-		startTime: 2,
-		endTime: 12,
-		//top: 60,
-		//left: 295,
-		//height: 180,
-		//width: 140,
-		title: 'Attachment Troubleshooting',
-		text: '1. First video overlay "Attachment Troubleshooting" - 10 second duration.',
-		link: '/video2a.mp4',
-	},
-	{
-		startTime: 14,
-		endTime: 24,
-		//top: 110,
-		//left: 155,
-		//height: 90,
-		//width: 140,
-		title: 'Red Light Troubleshooting',
-		text: '2. Second video overlay "Red Light Troubleshooting" - 10 second duration.',
-		link: '/video2b.mp4',
-	},
-	{
-		startTime: 26,
-		endTime: 36,
-		//top: 135,
-		//left: 35,
-		//height: 70,
-		//width: 130,
-		title: 'Sleep Troubleshooting',
-		text: '3. Third video overlay "Sleep Troubleshooting" - 10 second duration.',
-		link: '/video3a.mp4',
-	},
-];
+import React, { useRef, useState } from 'react';
+import {
+	hotspots,
+	useVideoPlayer,
+	VIDEO_CONFIG,
+	COMPONENT_STYLES,
+	type VideoPlayerRefs,
+} from '../lib';
 
 const HotspotVideo = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -49,190 +19,31 @@ const HotspotVideo = () => {
 	const fullscreenToggleRef = useRef<HTMLButtonElement>(null);
 	const [currentHotspotIdx, setCurrentHotspotIdx] = useState(-1);
 
-	useEffect(() => {
-		const video = videoRef.current;
-		const video2 = video2Ref.current;
-		const hotspot = hotspotRef.current;
-		const label = labelRef.current;
-		const close = closeRef.current;
-		const description = descriptionRef.current;
-		const fullscreenToggle = fullscreenToggleRef.current;
+	const refs: VideoPlayerRefs = {
+		videoRef,
+		video2Ref,
+		hotspotRef,
+		descriptionRef,
+		labelRef,
+		closeRef,
+		fullscreenToggleRef,
+	};
 
-		const toggleFullScreen = async () => {
-			console.log('toggleFullScreen called');
-			const container = document.getElementById('video-player-container');
-			if (!container) return;
-
-			const fullscreenApi =
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				(container as any).requestFullscreen ||
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				(container as any).webkitRequestFullscreen ||
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				(container as any).mozRequestFullScreen ||
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				(container as any).msRequestFullscreen;
-
-			if (!document.fullscreenElement && fullscreenApi) {
-				fullscreenApi.call(container);
-				console.log('works');
-			} else {
-				document.exitFullscreen?.();
-				console.log('exits');
-			}
-		};
-
-		const handleTimeUpdate = () => {
-			const currentTime = video?.currentTime || 0;
-			let newHotspotIdx = -1;
-
-			for (let i = 0; i < hotspots.length; i++) {
-				if (
-					currentTime >= hotspots[i].startTime &&
-					currentTime < hotspots[i].endTime
-				) {
-					newHotspotIdx = i;
-					break;
-				}
-			}
-
-			if (newHotspotIdx !== -1 && newHotspotIdx !== currentHotspotIdx) {
-				//const h = hotspots[newHotspotIdx];
-				if (hotspot) {
-					//hotspot.style.top = `${h.top}px`;
-					//hotspot.style.left = `${h.left}px`;
-					//hotspot.style.width = `${h.width}px`;
-					//hotspot.style.height = `${h.height}px`;
-					//hotspot.setAttribute('src', `${hotspots[newHotspotIdx].link}`);
-					hotspot.style.visibility = 'visible';
-				}
-				if (label) {
-					label.innerHTML = hotspots[newHotspotIdx].title;
-				}
-				if (description) {
-					description.innerHTML = hotspots[newHotspotIdx].text;
-				}
-				setCurrentHotspotIdx(newHotspotIdx);
-			} else if (newHotspotIdx === -1) {
-				if (hotspot) {
-					hotspot.style.visibility = 'hidden';
-				}
-				if (label) {
-					label.innerHTML = '';
-				}
-				if (description) {
-					description.innerHTML = '';
-				}
-				setCurrentHotspotIdx(-1);
-			}
-		};
-
-		const handleMouseOver = () => {
-			if (currentHotspotIdx !== -1) {
-				if (description) {
-					description.innerHTML = hotspots[currentHotspotIdx].text;
-				}
-				if (label) {
-					label.innerHTML = hotspots[currentHotspotIdx].title;
-				}
-				//video?.pause();
-				//video?.setAttribute('src', '/video3.mp4');
-				//video?.load();
-			}
-		};
-
-		const handleMouseOut = () => {
-			//description.innerHTML = '';
-			//video?.play();
-		};
-
-		const handleMouseClick = () => {
-			if (currentHotspotIdx >= 0 && currentHotspotIdx < hotspots.length) {
-				const hotspot = hotspots[currentHotspotIdx];
-				if (close) {
-					close.style.visibility = 'visible';
-				}
-				video?.pause(); // Pause the main video
-				if (video2) {
-					video2.pause(); // Pause video2 if it's currently playing
-					video2.removeAttribute('src'); // Remove the current src to reset the video
-					video2.style.visibility = 'hidden'; // Temporarily hide the video to ensure proper reset
-
-					// Ensure the video element is fully reset before setting the new src
-					const resetAndPlayVideo2 = () => {
-						video2.setAttribute('src', hotspot.link); // Set the new src
-						video2.load(); // Ensure the video is loaded before playing
-						video2.style.visibility = 'visible'; // Make the video visible again
-						video2.play().catch((error) => {
-							console.error('Error playing video2:', error);
-						});
-					};
-
-					// Use a small delay to ensure the video element is fully reset
-					setTimeout(resetAndPlayVideo2, 50); // Delay of 50ms to allow the reset to complete
-				}
-			}
-		};
-
-		const handleVideo2Ended = () => {
-			if (video2) {
-				video2.style.visibility = 'hidden';
-				video?.play();
-			}
-			if (close) {
-				close.style.visibility = 'hidden';
-			}
-		};
-
-		const handleClose = () => {
-			if (video2) {
-				video2?.pause();
-				video2.style.visibility = 'hidden';
-				video?.play();
-				if (close) {
-					close.style.visibility = 'hidden';
-				}
-			}
-		};
-
-		video?.addEventListener('timeupdate', handleTimeUpdate);
-		hotspot?.addEventListener('mouseover', handleMouseOver);
-		hotspot?.addEventListener('mouseout', handleMouseOut);
-		hotspot?.addEventListener('click', handleMouseClick);
-		video2?.addEventListener('ended', handleVideo2Ended);
-		close?.addEventListener('click', handleClose);
-		document.addEventListener('DOMContentLoaded', toggleFullScreen);
-		if (fullscreenToggle) {
-			fullscreenToggle.addEventListener('click', toggleFullScreen);
-		}
-
-		return () => {
-			video?.removeEventListener('timeupdate', handleTimeUpdate);
-			hotspot?.removeEventListener('mouseover', handleMouseOver);
-			hotspot?.removeEventListener('mouseout', handleMouseOut);
-			hotspot?.addEventListener('click', handleMouseClick);
-			video2?.removeEventListener('ended', handleVideo2Ended);
-			close?.removeEventListener('click', handleClose);
-			document.removeEventListener('DOMContentLoaded', toggleFullScreen);
-			if (fullscreenToggle) {
-				fullscreenToggle.removeEventListener('click', toggleFullScreen);
-			}
-		};
-	}, [currentHotspotIdx]);
+	useVideoPlayer(refs, hotspots, currentHotspotIdx, setCurrentHotspotIdx);
 
 	return (
-		<div
-			className="flex flex-col items-start gap-4 border-2 border-gray-600 p-4 bg-gray-800 text-white"
-			id="video-player-container"
-		>
-			<div id="video-player-subcontainer" className="relative w-full max-w-4xl">
+		<div className={COMPONENT_STYLES.container} id={VIDEO_CONFIG.containerId}>
+			<div
+				id={VIDEO_CONFIG.subContainerId}
+				className={COMPONENT_STYLES.subContainer}
+			>
 				{/** FULLSCREEN TOGGLE BUTTON */}
 				<div className="pointer-events-auto z-50 hidden">
 					<button
 						ref={fullscreenToggleRef}
 						id="fullscreen-toggle-btn"
 						type="button"
-						className="text-gray-400 border-2 border-pink-500 hover:border-lime-500 rounded-full px-2 py-1 absolute z-30 top-4 right-4"
+						className={COMPONENT_STYLES.fullscreenButton}
 					>
 						Fullscreen
 					</button>
@@ -240,7 +51,7 @@ const HotspotVideo = () => {
 				{/** HOTSPOT VIDEO CLOSE BUTTON */}
 				<div
 					ref={closeRef}
-					className="absolute z-30 right-4 top-4 px-2 rounded-full bg-white/50 text-black/50 hover:bg-white/100 hover:text-black/100 border-black/50 hover:border-black/100"
+					className={COMPONENT_STYLES.closeButton}
 					style={{ visibility: 'hidden' }}
 				>
 					close
@@ -252,22 +63,22 @@ const HotspotVideo = () => {
 					controls
 					playsInline
 					preload="auto"
-					className="absolute w-full max-w-4xl z-20"
+					className={COMPONENT_STYLES.overlayVideo}
 					style={{ visibility: 'hidden' }}
 				>
-					<source src="/video2.mp4" type="video/mp4" />
+					<source src={VIDEO_CONFIG.overlayVideo} type="video/mp4" />
 					<track
-						src="/captions/video2.vtt"
+						src={VIDEO_CONFIG.captionsPath}
 						kind="subtitles"
-						srcLang="en"
-						label="English"
+						srcLang={VIDEO_CONFIG.captionsLanguage}
+						label={VIDEO_CONFIG.captionsLabel}
 					/>
 					<p>HTML5 video is not supported by this browser.</p>
 				</video>
 				{/* HOTSPOT LABEL */}
 				<div
 					ref={hotspotRef}
-					className="absolute z-10 right-4 bottom-14 px-2 text-green-900 border-2 border-green-400 bg-green-300/60 rounded-full transition-all duration-200 hover:text-black hover:bg-green-300 hover:border-green-500 hover:cursor-pointer"
+					className={COMPONENT_STYLES.hotspotLabel}
 					style={{ visibility: 'hidden' }}
 				>
 					<div ref={labelRef} />
@@ -275,21 +86,23 @@ const HotspotVideo = () => {
 
 				{/** BASE VIDEO */}
 				{/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
-				<video ref={videoRef} controls playsInline className="w-full max-w-4xl">
-					<source src="/video1.mp4" type="video/mp4" />
+				<video
+					ref={videoRef}
+					controls
+					playsInline
+					className={COMPONENT_STYLES.mainVideo}
+				>
+					<source src={VIDEO_CONFIG.mainVideo} type="video/mp4" />
 					<track
-						src="/captions/video2.vtt"
+						src={VIDEO_CONFIG.captionsPath}
 						kind="subtitles"
-						srcLang="en"
-						label="English"
+						srcLang={VIDEO_CONFIG.captionsLanguage}
+						label={VIDEO_CONFIG.captionsLabel}
 					/>
 					<p>HTML5 video is not supported by this browser.</p>
 				</video>
 			</div>
-			<div
-				ref={descriptionRef}
-				className="w-full max-w-4xl min-h-[50px] border-2 border-gray-600 p-2 text-sm text-white"
-			/>
+			<div ref={descriptionRef} className={COMPONENT_STYLES.description} />
 		</div>
 	);
 };

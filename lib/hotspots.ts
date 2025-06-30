@@ -1,0 +1,78 @@
+import type { Hotspot } from './types';
+
+export const hotspots: Hotspot[] = [
+	{
+		startTime: 5,
+		endTime: 10,
+		//top: 60,
+		//left: 295,
+		//height: 180,
+		//width: 140,
+		title: 'Helpful Hints',
+		text: '1. First video overlay "Attachment Troubleshooting" - 10 second duration.',
+		link: '/video2a.mp4',
+	},
+	{
+		startTime: 15,
+		endTime: 20,
+		title: 'Helpful Hints',
+		text: '2. Second video overlay "Red Light Troubleshooting" - 10 second duration.',
+		link: '/video2b.mp4',
+	},
+	{
+		startTime: 25,
+		endTime: 30,
+		title: 'Helpful Hints',
+		text: '3. Third video overlay "Sleep Troubleshooting" - 10 second duration.',
+		link: '/video3a.mp4',
+	},
+	{
+		startTime: 35,
+		endTime: 40,
+		title: 'Helpful Hints',
+		text: '1. First video overlay "Attachment Troubleshooting" - 10 second duration.',
+		link: '/video2a.mp4',
+	},
+	{
+		startTime: 45,
+		endTime: 50,
+		title: 'Helpful Hints',
+		text: '2. Second video overlay "Red Light Troubleshooting" - 10 second duration.',
+		link: '/video2b.mp4',
+	},
+	{
+		startTime: 55,
+		endTime: 60,
+		title: 'Helpful Hints',
+		text: '3. Third video overlay "Sleep Troubleshooting" - 10 second duration.',
+		link: '/video3a.mp4',
+	},
+	{
+		startTime: 65,
+		endTime: 66,
+		title: 'Helpful Hints',
+		text: '1. First video overlay "Attachment Troubleshooting" - 10 second duration.',
+		link: '/video2a.mp4',
+	},
+	{
+		startTime: 65,
+		endTime: 66,
+		title: 'Helpful Hints',
+		text: '2. Second video overlay "Red Light Troubleshooting" - 10 second duration.',
+		link: '/video2b.mp4',
+	},
+	{
+		startTime: 65,
+		endTime: 66,
+		title: 'Helpful Hints',
+		text: '3. Third video overlay "Sleep Troubleshooting" - 10 second duration.',
+		link: '/video3a.mp4',
+	},
+	{
+		startTime: 65,
+		endTime: 66,
+		title: 'Helpful Hints',
+		text: '1. First video overlay "Attachment Troubleshooting" - 10 second duration.',
+		link: '/video2a.mp4',
+	},
+];
