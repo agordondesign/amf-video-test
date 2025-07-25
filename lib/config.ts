@@ -3,10 +3,10 @@
 export const VIDEO_CONFIG = {
 	// Default video sources
 	mainVideo: '/APST1201 Skytrofa IFU Auto Injector Video.mp4',
-	overlayVideo: '/Scene 3- HH_charge your auto-injector.mp4',
+	overlayVideo: '/scene/Scene 3- HH_charge your auto-injector.mp4',
 
 	// Captions configuration
-	captionsPath: '/captions/video2.vtt',
+	captionsPath: '/captions.vtt',
 	captionsLanguage: 'en',
 	captionsLabel: 'English',
 
@@ -16,6 +16,12 @@ export const VIDEO_CONFIG = {
 	// Container IDs
 	containerId: 'video-player-container',
 	subContainerId: 'video-player-subcontainer',
+
+	// Custom controls configuration
+	controlsAutoHideDelay: 3000, // milliseconds
+	skipTimeAmount: 10, // seconds
+	showHoverTimePreview: true, // show time tooltip on progress bar hover
+	enableDraggableProgress: true, // enable draggable progress bar
 } as const;
 
 export const COMPONENT_STYLES = {
@@ -31,4 +37,27 @@ export const COMPONENT_STYLES = {
 	mainVideo: 'w-full',
 	description:
 		'w-full max-w-4xl min-h-[50px] border-2 border-gray-600 p-2 text-sm text-white hidden',
+
+	// Custom video controls styles
+	videoControlsContainer: 'relative group',
+	controlsOverlay:
+		'absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent border border-black pointer-events-none',
+	controlsWrapper: 'relative p-4 flex flex-col gap-3',
+	progressBarContainer: 'group cursor-pointer',
+	progressBar:
+		'h-1 bg-white/30 rounded-full relative overflow-hidden group-hover:h-2 transition-all duration-200',
+	progressFill:
+		'h-full bg-gradient-to-r from-pink-500 to-lime-500 rounded-full transition-all duration-100',
+	progressThumb:
+		'absolute top-1/2 w-3 h-3 bg-white rounded-full shadow-lg transform -translate-y-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
+	controlsMain: 'flex items-center justify-between',
+	controlsLeft: 'flex items-center gap-4',
+	controlsRight: 'flex items-center gap-4',
+	controlButton:
+		'text-white hover:text-lime-400 transition-colors duration-200 p-1',
+	volumeContainer: 'flex items-center gap-2 group',
+	volumeSlider:
+		'w-20 h-1 bg-white/30 rounded-full cursor-pointer relative overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-200',
+	volumeFill: 'h-full bg-gradient-to-r from-pink-500 to-lime-500 rounded-full',
+	timeDisplay: 'text-white text-sm font-mono',
 } as const;
