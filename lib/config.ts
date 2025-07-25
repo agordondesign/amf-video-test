@@ -2,8 +2,8 @@
 
 export const VIDEO_CONFIG = {
 	// Default video sources
-	mainVideo: '/video1.mp4',
-	overlayVideo: '/video2.mp4',
+	mainVideo: '/APST1201 Skytrofa IFU Auto Injector Video.mp4',
+	overlayVideo: '/Scene 3- HH_charge your auto-injector.mp4',
 
 	// Captions configuration
 	captionsPath: '/captions/video2.vtt',
