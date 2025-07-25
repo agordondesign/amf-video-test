@@ -4,10 +4,6 @@ export const hotspots: Hotspot[] = [
 	{
 		startTime: 141,
 		endTime: 149,
-		//top: 60,
-		//left: 295,
-		//height: 180,
-		//width: 140,
 		title: 'Helpful Hints',
 		text: 'Scene 3- HH_charge your auto-injector.mp4 - 26 second duration.',
 		link: '/scene/Scene 3- HH_charge your auto-injector.mp4',

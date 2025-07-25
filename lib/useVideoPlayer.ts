@@ -7,7 +7,8 @@ export const useVideoPlayer = (
 	refs: VideoPlayerRefs,
 	hotspots: Hotspot[],
 	currentHotspotIdx: number,
-	setCurrentHotspotIdx: (idx: number) => void
+	setCurrentHotspotIdx: (idx: number) => void,
+	setIsOverlayVisible?: (visible: boolean) => void
 ) => {
 	useEffect(() => {
 		const { videoRef, video2Ref, hotspotRef, closeRef, fullscreenToggleRef } =
@@ -23,7 +24,8 @@ export const useVideoPlayer = (
 			refs,
 			hotspots,
 			currentHotspotIdx,
-			setCurrentHotspotIdx
+			setCurrentHotspotIdx,
+			setIsOverlayVisible
 		);
 
 		// Add event listeners
@@ -45,5 +47,11 @@ export const useVideoPlayer = (
 			close?.removeEventListener('click', eventHandlers.handleClose);
 			fullscreenToggle?.removeEventListener('click', toggleFullScreen);
 		};
-	}, [refs, hotspots, currentHotspotIdx, setCurrentHotspotIdx]);
+	}, [
+		refs,
+		hotspots,
+		currentHotspotIdx,
+		setCurrentHotspotIdx,
+		setIsOverlayVisible,
+	]);
 };

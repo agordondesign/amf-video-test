@@ -5,7 +5,6 @@ interface ExtendedHTMLElement extends HTMLElement {
 }
 
 export const toggleFullScreen = async (): Promise<void> => {
-	console.log('toggleFullScreen called');
 	const container = document.getElementById(
 		'video-player-container'
 	) as ExtendedHTMLElement;
@@ -19,9 +18,7 @@ export const toggleFullScreen = async (): Promise<void> => {
 
 	if (!document.fullscreenElement && fullscreenApi) {
 		await fullscreenApi.call(container);
-		console.log('Entering fullscreen');
 	} else {
 		await document.exitFullscreen?.();
-		console.log('Exiting fullscreen');
 	}
 };

@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import Image from 'next/image';
+import CustomVideoControls from './CustomVideoControls';
 import {
 	hotspots,
 	useVideoPlayer,
@@ -8,7 +10,6 @@ import {
 	COMPONENT_STYLES,
 	type VideoPlayerRefs,
 } from '../lib';
-import CustomVideoControls from './CustomVideoControls';
 
 const HotspotVideo = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -19,6 +20,7 @@ const HotspotVideo = () => {
 	const closeRef = useRef<HTMLDivElement>(null);
 	const fullscreenToggleRef = useRef<HTMLButtonElement>(null);
 	const [currentHotspotIdx, setCurrentHotspotIdx] = useState(-1);
+	const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
 	const refs: VideoPlayerRefs = {
 		videoRef,
@@ -30,13 +32,33 @@ const HotspotVideo = () => {
 		fullscreenToggleRef,
 	};
 
-	useVideoPlayer(refs, hotspots, currentHotspotIdx, setCurrentHotspotIdx);
+	useVideoPlayer(
+		refs,
+		hotspots,
+		currentHotspotIdx,
+		setCurrentHotspotIdx,
+		setIsOverlayVisible
+	);
 
 	return (
 		<div className={COMPONENT_STYLES.container} id={VIDEO_CONFIG.containerId}>
+			{/* Preload all hotspot videos for seamless playback */}
+			{hotspots.map((hotspot, index) => (
+				<video
+					key={`preload-${index}`}
+					preload="auto"
+					style={{ display: 'none' }}
+					muted
+					playsInline
+					crossOrigin="anonymous"
+				>
+					<source src={hotspot.link} type="video/mp4" />
+				</video>
+			))}
+
 			<div
 				id={VIDEO_CONFIG.subContainerId}
-				className={COMPONENT_STYLES.subContainer}
+				className={`${COMPONENT_STYLES.subContainer} ${COMPONENT_STYLES.videoControlsContainer}`}
 			>
 				{/** FULLSCREEN TOGGLE BUTTON */}
 				<div className="pointer-events-auto z-50 hidden">
@@ -63,6 +85,7 @@ const HotspotVideo = () => {
 					ref={video2Ref}
 					playsInline
 					preload="auto"
+					crossOrigin="anonymous"
 					className={COMPONENT_STYLES.overlayVideo}
 					style={{ visibility: 'hidden' }}
 				>
@@ -81,7 +104,14 @@ const HotspotVideo = () => {
 					className={COMPONENT_STYLES.hotspotLabel}
 					style={{ visibility: 'hidden' }}
 				>
-					<div ref={labelRef} />
+					{/* Use the HelpfulHintsButton SVG */}
+					<Image
+						src="/HelpfulHintsButton.svg"
+						alt="Helpful Hints"
+						width={112}
+						height={112}
+						className="w-28 h-28"
+					/>
 				</div>
 
 				{/** BASE VIDEO */}
@@ -89,7 +119,8 @@ const HotspotVideo = () => {
 				<video
 					ref={videoRef}
 					playsInline
-					preload="metadata"
+					preload="auto"
+					crossOrigin="anonymous"
 					className={COMPONENT_STYLES.mainVideo}
 				>
 					<source src={VIDEO_CONFIG.mainVideo} type="video/mp4" />
@@ -103,7 +134,13 @@ const HotspotVideo = () => {
 				</video>
 
 				{/* Custom Video Controls */}
-				<CustomVideoControls videoRef={videoRef} />
+				<CustomVideoControls
+					videoRef={videoRef}
+					overlayVideoRef={video2Ref}
+					isOverlayVisible={isOverlayVisible}
+					skipTime={VIDEO_CONFIG.skipTimeAmount}
+					autoHideDelay={VIDEO_CONFIG.controlsAutoHideDelay}
+				/>
 			</div>
 			<div ref={descriptionRef} className={COMPONENT_STYLES.description} />
 		</div>
