@@ -59,7 +59,7 @@ export const hotspots: Hotspot[] = [
 	},
 	{
 		startTime: 321,
-		endTime: 357,
+		endTime: 351,
 		title: 'Helpful Hints',
 		text: 'Scene 12- HH_inject step 9.mp4 - 38 second duration.',
 		link: '/scene/Scene 12- HH_inject step 9.mp4',

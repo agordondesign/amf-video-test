@@ -36,6 +36,28 @@ export const createVideoEventHandlers = (
 		requestAnimationFrame(fade);
 	};
 
+	// Fade-in function for hotspot buttons
+	const fadeInHotspot = (element: HTMLElement, duration: number = 500) => {
+		element.style.opacity = '0';
+		element.style.visibility = 'visible';
+		element.style.transition = `opacity ${duration}ms ease-out`;
+
+		// Force a reflow to ensure the transition is applied
+		void element.offsetHeight;
+
+		element.style.opacity = '1';
+	};
+
+	// Fade-out function for hotspot buttons
+	const fadeOutHotspot = (element: HTMLElement, duration: number = 300) => {
+		element.style.transition = `opacity ${duration}ms ease-out`;
+		element.style.opacity = '0';
+
+		setTimeout(() => {
+			element.style.visibility = 'hidden';
+		}, duration);
+	};
+
 	const handleTimeUpdate = () => {
 		const video = videoRef.current;
 		const hotspot = hotspotRef.current;
@@ -81,7 +103,7 @@ export const createVideoEventHandlers = (
 		) {
 			console.log('Showing hotspot:', newHotspotIdx);
 			if (hotspot) {
-				hotspot.style.visibility = 'visible';
+				fadeInHotspot(hotspot);
 			}
 			if (label) {
 				label.innerHTML = hotspots[newHotspotIdx].title;
@@ -91,8 +113,8 @@ export const createVideoEventHandlers = (
 			}
 			setCurrentHotspotIdx(newHotspotIdx);
 		} else if (newHotspotIdx === -1 || overlayIsVisible) {
-			if (hotspot) {
-				hotspot.style.visibility = 'hidden';
+			if (hotspot && hotspot.style.visibility === 'visible') {
+				fadeOutHotspot(hotspot);
 			}
 			if (label) {
 				label.innerHTML = '';

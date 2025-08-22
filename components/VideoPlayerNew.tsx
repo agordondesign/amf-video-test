@@ -102,7 +102,7 @@ const HotspotVideo = () => {
 				<div
 					ref={hotspotRef}
 					className={COMPONENT_STYLES.hotspotLabel}
-					style={{ visibility: 'hidden' }}
+					style={{ visibility: 'hidden', opacity: 0 }}
 				>
 					{/* Use the HelpfulHintsButton SVG */}
 					<Image
