@@ -17,13 +17,13 @@ export const hotspots: Hotspot[] = [
 	},
 	{
 		startTime: 204,
-		endTime: 215,
+		endTime: 217,
 		title: 'Helpful Hints',
 		text: 'Scene 5- HH_prepare step 2.mp4 - 36 second duration.',
 		link: '/scene/Scene 5- HH_prepare step 2.mp4',
 	},
 	{
-		startTime: 216,
+		startTime: 218,
 		endTime: 226,
 		title: 'Helpful Hints',
 		text: 'Scene 6- HH_prepare step 3.mp4 - 09 second duration.',
@@ -66,7 +66,7 @@ export const hotspots: Hotspot[] = [
 	},
 	{
 		startTime: 439,
-		endTime: 455,
+		endTime: 453,
 		title: 'Helpful Hints',
 		text: 'Scene 16- HH_after injection step 12.mp4 - 17 second duration.',
 		link: '/scene/Scene 16- HH_after injection step 12.mp4',
