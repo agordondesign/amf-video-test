@@ -2,14 +2,14 @@ import type { Hotspot } from "./types";
 
 export const hotspots: Hotspot[] = [
   {
-    startTime: 152,
+    startTime: 153,
     endTime: 160,
     title: "Helpful Hints",
     text: "Scene 3- HH_charge your auto-injector.mp4 - 26 second duration.",
     link: "/scene/Scene 3- HH_charge your auto-injector.mp4",
   },
   {
-    startTime: 195,
+    startTime: 196,
     endTime: 203,
     title: "Helpful Hints",
     text: "Scene 4- HH_prepare step 1.mp4 - 20 second duration.",
