@@ -51,7 +51,7 @@ export const hotspots: Hotspot[] = [
     link: "/scene/Scene 7- HH_inject step 7.mp4",
   },
   {
-    startTime: 308,
+    startTime: 309,
     endTime: 313,
     title: "Helpful Hints",
     text: "Scene 11- HH_inject step 8.mp4 - 15 second duration. (303 - 319)",
