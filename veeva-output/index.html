@@ -1,823 +1,1233 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Skytrofa Auto Injector Video</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #000;
-            color: white;
-            overflow: hidden;
-        }
-        
-        /* Main container - matches original styles */
-        .video-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            color: white;
-            width: 100%;
-            position: relative;
-        }
-        
-        .video-subcontainer {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            background-color: black;
-        }
-        
-        /* Enhanced video controls container */
-        .video-controls-group {
-            position: relative;
-        }
-        
-        .video-controls-group:hover .video-controls-overlay {
-            opacity: 1;
-        }
-        
-        /* Fullscreen toggle button (hidden initially) */
-        .fullscreen-toggle {
-            pointer-events: auto;
-            z-index: 50;
-            display: none;
-        }
-        
-        .fullscreen-button {
-            color: rgba(255, 255, 255, 0.8);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            padding: 12px 16px;
-            position: absolute;
-            z-index: 30;
-            top: 16px;
-            right: 16px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .fullscreen-button:hover {
-            border-color: white;
-            color: white;
-            transform: scale(1.05);
-        }
-        
-        .fullscreen-button:active {
-            transform: scale(0.95);
-        }
-        
-        /* Close button for overlay videos */
-        .close-button {
-            position: absolute;
-            z-index: 30;
-            right: 16px;
-            top: 16px;
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.8);
-            color: black;
-            border: 1px solid #d1d5db;
-            border-radius: 9999px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            visibility: hidden;
-        }
-        
-        .close-button:hover {
-            background: white;
-            border-color: #9ca3af;
-            transform: scale(1.05);
-        }
-        
-        .close-button:active {
-            transform: scale(0.95);
-        }
-        
-        /* Video elements */
-        .overlay-video {
-            position: absolute;
-            width: 100%;
-            z-index: 20;
-            visibility: hidden;
-        }
-        
-        .main-video {
-            width: 100%;
-        }
-        
-        /* Hotspot button */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background-color: #000;
+        color: white;
+        overflow: hidden;
+      }
+
+      /* Main container - matches original styles */
+      .video-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        color: white;
+        width: 100%;
+        position: relative;
+      }
+
+      .video-subcontainer {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background-color: black;
+      }
+
+      /* Enhanced video controls container */
+      .video-controls-group {
+        position: relative;
+      }
+
+      .video-controls-group:hover .video-controls-overlay {
+        opacity: 1;
+      }
+
+      /* Fullscreen toggle button (hidden initially) */
+      .fullscreen-toggle {
+        pointer-events: auto;
+        z-index: 50;
+        display: none;
+      }
+
+      .fullscreen-button {
+        color: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(4px);
+        padding: 12px 16px;
+        position: absolute;
+        z-index: 30;
+        top: 16px;
+        right: 16px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .fullscreen-button:hover {
+        border-color: white;
+        color: white;
+        transform: scale(1.05);
+      }
+
+      .fullscreen-button:active {
+        transform: scale(0.95);
+      }
+
+      /* Close button for overlay videos */
+      .close-button {
+        position: absolute;
+        z-index: 30;
+        right: 16px;
+        top: 16px;
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.8);
+        color: black;
+        border: 1px solid #d1d5db;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        visibility: hidden;
+      }
+
+      .close-button:hover {
+        background: white;
+        border-color: #9ca3af;
+        transform: scale(1.05);
+      }
+
+      .close-button:active {
+        transform: scale(0.95);
+      }
+
+      /* Video elements */
+      .overlay-video {
+        position: absolute;
+        width: 100%;
+        z-index: 20;
+        visibility: hidden;
+      }
+
+      .main-video {
+        width: 100%;
+      }
+
+      /* Hotspot button */
+      .hotspot-button {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 112px;
+        height: 112px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: bold;
+        filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+        z-index: 10;
+        left: 24px;
+        bottom: 48px;
+        font-size: 12px;
+        line-height: 1;
+        transition: all 0.3s ease-out;
+        cursor: pointer;
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .hotspot-button:hover {
+        transform: scale(1.1);
+      }
+
+      .hotspot-button:active {
+        transform: scale(0.95);
+      }
+
+      .hotspot-button.visible {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .hotspot-button img {
+        width: 112px;
+        height: 112px;
+      }
+
+      /* Video controls overlay */
+      .video-controls-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 30;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .video-controls-backdrop {
+        backdrop-filter: blur(12px);
+        background: rgba(0, 0, 0, 0.4);
+        padding: 16px;
+      }
+
+      .controls-main {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .control-button {
+        color: rgba(255, 255, 255, 0.9);
+        transition: all 0.2s ease;
+        padding: 8px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .control-button:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .control-button:active {
+        transform: scale(0.95);
+      }
+
+      .time-display {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        font-family: monospace;
+        min-width: 40px;
+      }
+
+      .progress-container {
+        flex: 1;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .progress-bar {
+        height: 2px;
+        background: rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        transition: height 0.2s ease;
+      }
+
+      .progress-container:hover .progress-bar {
+        height: 4px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: white;
+        transition: width 0.1s ease;
+        width: 0%;
+      }
+
+      .progress-thumb {
+        position: absolute;
+        top: 50%;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        left: 0%;
+      }
+
+      .progress-container:hover .progress-thumb {
+        opacity: 1;
+      }
+
+      .volume-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .volume-controls:hover .volume-slider {
+        opacity: 1;
+      }
+
+      .volume-slider {
+        width: 64px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        position: relative;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .volume-fill {
+        height: 100%;
+        background: white;
+        width: 100%;
+      }
+
+      /* Description area (initially hidden) */
+      .description {
+        width: 100%;
+        max-width: 1024px;
+        min-height: 50px;
+        border: 2px solid #4b5563;
+        padding: 8px;
+        font-size: 14px;
+        color: white;
+        display: none;
+      }
+
+      /* Loading indicator */
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        z-index: 10;
+      }
+
+      /* Error message */
+      .error-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        display: none;
+        z-index: 20;
+      }
+
+      /* Hidden preload videos */
+      .preload-videos {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+
+      /* Mobile responsive */
+      @media (max-width: 768px) {
         .hotspot-button {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            width: 112px;
-            height: 112px;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: bold;
-            filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
-            z-index: 10;
-            left: 24px;
-            bottom: 48px;
-            font-size: 12px;
-            line-height: 1;
-            transition: all 0.3s ease-out;
-            cursor: pointer;
-            visibility: hidden;
-            opacity: 0;
+          width: 80px;
+          height: 80px;
+          left: 16px;
+          bottom: 32px;
         }
-        
-        .hotspot-button:hover {
-            transform: scale(1.1);
-        }
-        
-        .hotspot-button:active {
-            transform: scale(0.95);
-        }
-        
-        .hotspot-button.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-        
+
         .hotspot-button img {
-            width: 112px;
-            height: 112px;
+          width: 80px;
+          height: 80px;
         }
-        
-        /* Video controls overlay */
-        .video-controls-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 30;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .video-controls-backdrop {
-            backdrop-filter: blur(12px);
-            background: rgba(0, 0, 0, 0.4);
-            padding: 16px;
-        }
-        
-        .controls-main {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
+
         .control-button {
-            color: rgba(255, 255, 255, 0.9);
-            transition: all 0.2s ease;
-            padding: 8px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            border-radius: 4px;
+          padding: 6px;
+          font-size: 14px;
         }
-        
-        .control-button:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
+
+        .video-controls-backdrop {
+          padding: 12px;
         }
-        
-        .control-button:active {
-            transform: scale(0.95);
+
+        .controls-main {
+          gap: 12px;
         }
-        
-        .time-display {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            font-family: monospace;
-            min-width: 40px;
-        }
-        
-        .progress-container {
-            flex: 1;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .progress-bar {
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            transition: height 0.2s ease;
-        }
-        
-        .progress-container:hover .progress-bar {
-            height: 4px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: white;
-            transition: width 0.1s ease;
-            width: 0%;
-        }
-        
-        .progress-thumb {
-            position: absolute;
-            top: 50%;
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
-            left: 0%;
-        }
-        
-        .progress-container:hover .progress-thumb {
-            opacity: 1;
-        }
-        
-        .volume-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .volume-controls:hover .volume-slider {
-            opacity: 1;
-        }
-        
-        .volume-slider {
-            width: 64px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            position: relative;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .volume-fill {
-            height: 100%;
-            background: white;
-            width: 100%;
-        }
-        
-        /* Description area (initially hidden) */
-        .description {
-            width: 100%;
-            max-width: 1024px;
-            min-height: 50px;
-            border: 2px solid #4b5563;
-            padding: 8px;
-            font-size: 14px;
-            color: white;
-            display: none;
-        }
-        
-        /* Loading indicator */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            z-index: 10;
-        }
-        
-        /* Error message */
-        .error-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 8px;
-            display: none;
-            z-index: 20;
-        }
-        
-        /* Hidden preload videos */
-        .preload-videos {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            .hotspot-button {
-                width: 80px;
-                height: 80px;
-                left: 16px;
-                bottom: 32px;
-            }
-            
-            .hotspot-button img {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .control-button {
-                padding: 6px;
-                font-size: 14px;
-            }
-            
-            .video-controls-backdrop {
-                padding: 12px;
-            }
-            
-            .controls-main {
-                gap: 12px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="video-container" id="video-player-container">
-        <!-- Preload all hotspot videos -->
-        <div class="preload-videos">
-            <video preload="auto" muted playsinline><source src="scene/Scene 3- HH_charge your auto-injector.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 4- HH_prepare step 1.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 5- HH_prepare step 2.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 6- HH_prepare step 3.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 7- HH_mixing step 4.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 8- HH_mixing step 5.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 7- HH_inject step 7.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 11- HH_inject step 8.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 12- HH_inject step 9.mp4" type="video/mp4"></video>
-            <video preload="auto" muted playsinline><source src="scene/Scene 16- HH_after injection step 12.mp4" type="video/mp4"></video>
+      <!-- Preload all hotspot videos -->
+      <div class="preload-videos">
+        <video preload="auto" muted playsinline>
+          <source
+            src="scene/Scene 3- HH_charge your auto-injector.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 4- HH_prepare step 1.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 5- HH_prepare step 2.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 6- HH_prepare step 3.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 7- HH_mixing step 4.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 8- HH_mixing step 5.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 7- HH_inject step 7.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 11- HH_inject step 8.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source src="scene/Scene 12- HH_inject step 9.mp4" type="video/mp4" />
+        </video>
+        <video preload="auto" muted playsinline>
+          <source
+            src="scene/Scene 16- HH_after injection step 12.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
+
+      <div
+        class="video-subcontainer video-controls-group"
+        id="video-player-subcontainer"
+      >
+        <!-- Loading indicator -->
+        <div class="loading" id="loadingIndicator">Loading video...</div>
+
+        <!-- Error message -->
+        <div class="error-message" id="errorMessage">
+          <h3>Video Loading Error</h3>
+          <p>Please ensure all video files are in the correct location.</p>
+          <button
+            onclick="retryVideo()"
+            style="margin-top: 10px; padding: 5px 10px; color: black"
+          >
+            Retry
+          </button>
         </div>
-        
-        <div class="video-subcontainer video-controls-group" id="video-player-subcontainer">
-            <!-- Loading indicator -->
-            <div class="loading" id="loadingIndicator">Loading video...</div>
-            
-            <!-- Error message -->
-            <div class="error-message" id="errorMessage">
-                <h3>Video Loading Error</h3>
-                <p>Please ensure all video files are in the correct location.</p>
-                <button onclick="retryVideo()" style="margin-top: 10px; padding: 5px 10px; color: black;">Retry</button>
-            </div>
-            
-            <!-- Fullscreen toggle button -->
-            <div class="fullscreen-toggle">
-                <button id="fullscreen-toggle-btn" type="button" class="fullscreen-button">
-                    Fullscreen
-                </button>
-            </div>
-            
-            <!-- Hotspot video close button -->
-            <div id="closeButton" class="close-button">
-                close
-            </div>
-            
-            <!-- Overlay video for hotspots -->
-            <video 
-                id="overlayVideo"
-                playsinline 
-                preload="auto"
-                class="overlay-video"
-                onended="handleOverlayVideoEnded()">
-                <source src="scene/Scene 3- HH_charge your auto-injector.mp4" type="video/mp4">
-                <track src="captions.vtt" kind="subtitles" srclang="en" label="English">
-                <p>HTML5 video is not supported by this browser.</p>
-            </video>
-            
-            <!-- Hotspot button -->
-            <div id="hotspotButton" class="hotspot-button" onclick="handleHotspotClick()">
-                <img src="HelpfulHintsButton.svg" alt="Helpful Hints">
-            </div>
-            
-            <!-- Main video -->
-            <video 
-                id="mainVideo"
-                playsinline 
-                preload="auto"
-                class="main-video"
-                onloadedmetadata="onVideoLoaded()"
-                ontimeupdate="handleTimeUpdate()"
-                onplay="updatePlayButton()"
-                onpause="updatePlayButton()"
-                onended="onVideoEnded()"
-                onerror="onVideoError()"
-                oncanplay="hideLoading()">
-                <source src="APST1201 Skytrofa IFU Auto Injector Video.mp4" type="video/mp4">
-                <track src="captions.vtt" kind="subtitles" srclang="en" label="English">
-                <p>HTML5 video is not supported by this browser.</p>
-            </video>
-            
-            <!-- Video Controls -->
-            <div class="video-controls-overlay" id="videoControlsOverlay">
-                <div class="video-controls-backdrop">
-                    <div class="controls-main">
-                        <button class="control-button" id="playButton" onclick="togglePlay()">
-                            ▶
-                        </button>
-                        <button class="control-button" onclick="skipTime(-10)">⏪</button>
-                        <button class="control-button" onclick="skipTime(10)">⏩</button>
-                        <span class="time-display" id="currentTime">0:00</span>
-                        <div class="progress-container" onclick="seekVideo(event)">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progressFill"></div>
-                                <div class="progress-thumb" id="progressThumb"></div>
-                            </div>
-                        </div>
-                        <span class="time-display" id="duration">0:00</span>
-                        <div class="volume-controls">
-                            <button class="control-button" id="volumeButton" onclick="toggleMute()">
-                                🔊
-                            </button>
-                            <div class="volume-slider" onclick="setVolume(event)">
-                                <div class="volume-fill" id="volumeFill"></div>
-                            </div>
-                        </div>
-                        <button class="control-button" onclick="toggleFullscreen()">
-                            ⛶
-                        </button>
-                    </div>
+
+        <!-- Fullscreen toggle button -->
+        <div class="fullscreen-toggle">
+          <button
+            id="fullscreen-toggle-btn"
+            type="button"
+            class="fullscreen-button"
+          >
+            Fullscreen
+          </button>
+        </div>
+
+        <!-- Hotspot video close button -->
+        <div id="closeButton" class="close-button">close</div>
+
+        <!-- Overlay video for hotspots -->
+        <video
+          id="overlayVideo"
+          playsinline
+          preload="auto"
+          class="overlay-video"
+          onended="handleOverlayVideoEnded()"
+        >
+          <source
+            src="scene/Scene 3- HH_charge your auto-injector.mp4"
+            type="video/mp4"
+          />
+          <track
+            src="captions.vtt"
+            kind="subtitles"
+            srclang="en"
+            label="English"
+          />
+          <p>HTML5 video is not supported by this browser.</p>
+        </video>
+
+        <!-- Hotspot button -->
+        <div
+          id="hotspotButton"
+          class="hotspot-button"
+          onclick="handleHotspotClick()"
+        >
+          <img src="HelpfulHintsButton.svg" alt="Helpful Hints" />
+        </div>
+
+        <!-- Main video -->
+        <video
+          id="mainVideo"
+          playsinline
+          preload="auto"
+          class="main-video"
+          onloadedmetadata="onVideoLoaded()"
+          ontimeupdate="handleTimeUpdate()"
+          onplay="updatePlayButton()"
+          onpause="updatePlayButton()"
+          onended="onVideoEnded()"
+          onerror="onVideoError()"
+          oncanplay="hideLoading()"
+        >
+          <source
+            src="APST1201 Skytrofa IFU Auto Injector Video.mp4"
+            type="video/mp4"
+          />
+          <track
+            src="captions.vtt"
+            kind="subtitles"
+            srclang="en"
+            label="English"
+          />
+          <p>HTML5 video is not supported by this browser.</p>
+        </video>
+
+        <!-- Video Controls -->
+        <div class="video-controls-overlay" id="videoControlsOverlay">
+          <div class="video-controls-backdrop">
+            <div class="controls-main">
+              <!-- Play/Pause Button -->
+              <button
+                class="control-button"
+                id="playButton"
+                onclick="togglePlay()"
+                style="
+                  color: rgba(255, 255, 255, 0.9);
+                  background: none;
+                  border: none;
+                  padding: 4px;
+                  border-radius: 4px;
+                "
+              >
+                <!-- Play SVG (show when paused) -->
+                <svg
+                  id="playIcon"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: inline"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <!-- Pause SVG (show when playing, toggle with JS) -->
+                <svg
+                  id="pauseIcon"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: none"
+                >
+                  <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                </svg>
+              </button>
+              <!-- Skip Backward -->
+              <button
+                class="control-button"
+                onclick="skipTime(-10)"
+                style="
+                  color: rgba(255, 255, 255, 0.9);
+                  background: none;
+                  border: none;
+                  padding: 4px;
+                  border-radius: 4px;
+                "
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
+                  />
+                </svg>
+              </button>
+              <!-- Skip Forward -->
+              <button
+                class="control-button"
+                onclick="skipTime(10)"
+                style="
+                  color: rgba(255, 255, 255, 0.9);
+                  background: none;
+                  border: none;
+                  padding: 4px;
+                  border-radius: 4px;
+                "
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"
+                  />
+                </svg>
+              </button>
+              <!-- Volume Button -->
+              <button
+                class="control-button"
+                id="volumeButton"
+                onclick="toggleMute()"
+                style="
+                  color: rgba(255, 255, 255, 0.9);
+                  background: none;
+                  border: none;
+                  padding: 4px;
+                  border-radius: 4px;
+                "
+              >
+                <!-- Muted SVG (show when muted) -->
+                <svg
+                  id="volumeMutedIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: none"
+                >
+                  <path
+                    d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                  />
+                </svg>
+                <!-- Low Volume SVG (show when volume < 0.5) -->
+                <svg
+                  id="volumeLowIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: none"
+                >
+                  <path
+                    d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"
+                  />
+                </svg>
+                <!-- High Volume SVG (show when volume >= 0.5) -->
+                <svg
+                  id="volumeHighIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: inline"
+                >
+                  <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+                  />
+                </svg>
+                <!-- Low Volume SVG -->
+                <svg
+                  id="volumeLowIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: none"
+                >
+                  <path
+                    d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"
+                  />
+                </svg>
+                <!-- High Volume SVG -->
+                <svg
+                  id="volumeHighIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: inline"
+                >
+                  <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+                  />
+                </svg>
+              </button>
+              <!-- Fullscreen Button -->
+              <button
+                class="control-button"
+                id="fullscreenButton"
+                onclick="toggleFullscreen()"
+                style="
+                  color: rgba(255, 255, 255, 0.9);
+                  background: none;
+                  border: none;
+                  padding: 4px;
+                  border-radius: 4px;
+                "
+              >
+                <!-- Enter Fullscreen SVG -->
+                <svg
+                  id="fullscreenEnterIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: inline"
+                >
+                  <path
+                    d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+                  />
+                </svg>
+                <!-- Exit Fullscreen SVG -->
+                <svg
+                  id="fullscreenExitIcon"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="display: none"
+                >
+                  <path
+                    d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
+                  />
+                </svg>
+              </button>
+              <!-- Close Button -->
+              <button
+                class="control-button"
+                id="closeButton"
+                onclick="closeVideo()"
+                style="
+                  color: rgba(255, 255, 255, 0.9);
+                  background: none;
+                  border: none;
+                  padding: 4px;
+                  border-radius: 4px;
+                "
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7a1 1 0 1 0-1.41 1.41l4.89 4.89-4.89 4.89a1 1 0 1 0 1.41 1.41l4.89-4.89 4.89 4.89a1 1 0 0 0 1.41-1.41l-4.89-4.89 4.89-4.89a1 1 0 0 0 0-1.41z"
+                  />
+                </svg>
+              </button>
+              <span class="time-display" id="currentTime">0:00</span>
+              <div class="progress-container" onclick="seekVideo(event)">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill"></div>
+                  <div class="progress-thumb" id="progressThumb"></div>
                 </div>
+              </div>
+              <span class="time-display" id="duration">0:00</span>
+              <div class="volume-controls">
+                <button
+                  class="control-button"
+                  id="volumeButton"
+                  onclick="toggleMute()"
+                >
+                  🔊
+                </button>
+                <div class="volume-slider" onclick="setVolume(event)">
+                  <div class="volume-fill" id="volumeFill"></div>
+                </div>
+              </div>
+              <button class="control-button" onclick="toggleFullscreen()">
+                ⛶
+              </button>
             </div>
+          </div>
         </div>
-        
-        <!-- Description area (hidden by default) -->
-        <div id="description" class="description"></div>
+      </div>
+
+      <!-- Description area (hidden by default) -->
+      <div id="description" class="description"></div>
     </div>
 
     <script>
-        // Hotspot data matching the original
-        var hotspots = [
-            { startTime: 153, endTime: 160, title: "Helpful Hints", text: "Scene 3- HH_charge your auto-injector.mp4 - 26 second duration.", link: "scene/Scene 3- HH_charge your auto-injector.mp4" },
-            { startTime: 196, endTime: 203, title: "Helpful Hints", text: "Scene 4- HH_prepare step 1.mp4 - 20 second duration.", link: "scene/Scene 4- HH_prepare step 1.mp4" },
-            { startTime: 205, endTime: 218, title: "Helpful Hints", text: "Scene 5- HH_prepare step 2.mp4 - 36 second duration.", link: "scene/Scene 5- HH_prepare step 2.mp4" },
-            { startTime: 220, endTime: 227, title: "Helpful Hints", text: "Scene 6- HH_prepare step 3.mp4 - 09 second duration.", link: "scene/Scene 6- HH_prepare step 3.mp4" },
-            { startTime: 228, endTime: 245, title: "Helpful Hints", text: "Scene 7- HH_mixing step 4.mp4 - 39 second duration.", link: "scene/Scene 7- HH_mixing step 4.mp4" },
-            { startTime: 247, endTime: 266, title: "Helpful Hints", text: "Scene 8- HH_mixing step 5.mp4 - 18 second duration.", link: "scene/Scene 8- HH_mixing step 5.mp4" },
-            { startTime: 295, endTime: 302, title: "Helpful Hints", text: "Scene 7- HH_inject step 7.mp4 - 38 second duration.", link: "scene/Scene 7- HH_inject step 7.mp4" },
-            { startTime: 309, endTime: 321, title: "Helpful Hints", text: "Scene 11- HH_inject step 8.mp4 - 15 second duration.", link: "scene/Scene 11- HH_inject step 8.mp4" },
-            { startTime: 323, endTime: 361, title: "Helpful Hints", text: "Scene 12- HH_inject step 9.mp4 - 38 second duration.", link: "scene/Scene 12- HH_inject step 9.mp4" },
-            { startTime: 442, endTime: 457, title: "Helpful Hints", text: "Scene 16- HH_after injection step 12.mp4 - 17 second duration.", link: "scene/Scene 16- HH_after injection step 12.mp4" }
-        ];
-        
-        // Global variables
-        var mainVideo = document.getElementById('mainVideo');
-        var overlayVideo = document.getElementById('overlayVideo');
-        var hotspotButton = document.getElementById('hotspotButton');
-        var closeButton = document.getElementById('closeButton');
-        var playButton = document.getElementById('playButton');
-        var currentTime = document.getElementById('currentTime');
-        var duration = document.getElementById('duration');
-        var progressFill = document.getElementById('progressFill');
-        var progressThumb = document.getElementById('progressThumb');
-        var volumeButton = document.getElementById('volumeButton');
-        var volumeFill = document.getElementById('volumeFill');
-        var description = document.getElementById('description');
-        var videoControlsOverlay = document.getElementById('videoControlsOverlay');
-        var loadingIndicator = document.getElementById('loadingIndicator');
-        var errorMessage = document.getElementById('errorMessage');
-        
-        var currentHotspotIdx = -1;
-        var isOverlayVisible = false;
-        var videoLoaded = false;
-        
-        // Utility functions
-        function formatTime(seconds) {
-            if (isNaN(seconds) || seconds === null) return '0:00';
-            var minutes = Math.floor(seconds / 60);
-            var secs = Math.floor(seconds % 60);
-            return minutes + ':' + (secs < 10 ? '0' : '') + secs;
-        }
-        
-        function fadeInVolume(video, duration) {
-            duration = duration || 1000;
-            var originalVolume = video.volume;
-            video.volume = 0;
-            var startTime = Date.now();
-            
-            function fade() {
-                var elapsed = Date.now() - startTime;
-                var progress = Math.min(elapsed / duration, 1);
-                video.volume = originalVolume * progress;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(fade);
-                }
-            }
+      // Hotspot data matching the original
+      var hotspots = [
+        {
+          startTime: 153,
+          endTime: 160,
+          title: "Helpful Hints",
+          text: "Scene 3- HH_charge your auto-injector.mp4 - 26 second duration.",
+          link: "scene/Scene 3- HH_charge your auto-injector.mp4",
+        },
+        {
+          startTime: 196,
+          endTime: 203,
+          title: "Helpful Hints",
+          text: "Scene 4- HH_prepare step 1.mp4 - 20 second duration.",
+          link: "scene/Scene 4- HH_prepare step 1.mp4",
+        },
+        {
+          startTime: 205,
+          endTime: 218,
+          title: "Helpful Hints",
+          text: "Scene 5- HH_prepare step 2.mp4 - 36 second duration.",
+          link: "scene/Scene 5- HH_prepare step 2.mp4",
+        },
+        {
+          startTime: 220,
+          endTime: 227,
+          title: "Helpful Hints",
+          text: "Scene 6- HH_prepare step 3.mp4 - 09 second duration.",
+          link: "scene/Scene 6- HH_prepare step 3.mp4",
+        },
+        {
+          startTime: 228,
+          endTime: 245,
+          title: "Helpful Hints",
+          text: "Scene 7- HH_mixing step 4.mp4 - 39 second duration.",
+          link: "scene/Scene 7- HH_mixing step 4.mp4",
+        },
+        {
+          startTime: 247,
+          endTime: 266,
+          title: "Helpful Hints",
+          text: "Scene 8- HH_mixing step 5.mp4 - 18 second duration.",
+          link: "scene/Scene 8- HH_mixing step 5.mp4",
+        },
+        {
+          startTime: 295,
+          endTime: 302,
+          title: "Helpful Hints",
+          text: "Scene 7- HH_inject step 7.mp4 - 38 second duration.",
+          link: "scene/Scene 7- HH_inject step 7.mp4",
+        },
+        {
+          startTime: 309,
+          endTime: 321,
+          title: "Helpful Hints",
+          text: "Scene 11- HH_inject step 8.mp4 - 15 second duration.",
+          link: "scene/Scene 11- HH_inject step 8.mp4",
+        },
+        {
+          startTime: 323,
+          endTime: 361,
+          title: "Helpful Hints",
+          text: "Scene 12- HH_inject step 9.mp4 - 38 second duration.",
+          link: "scene/Scene 12- HH_inject step 9.mp4",
+        },
+        {
+          startTime: 442,
+          endTime: 457,
+          title: "Helpful Hints",
+          text: "Scene 16- HH_after injection step 12.mp4 - 17 second duration.",
+          link: "scene/Scene 16- HH_after injection step 12.mp4",
+        },
+      ];
+
+      // Global variables
+      var mainVideo = document.getElementById("mainVideo");
+      var overlayVideo = document.getElementById("overlayVideo");
+      var hotspotButton = document.getElementById("hotspotButton");
+      var closeButton = document.getElementById("closeButton");
+      var playButton = document.getElementById("playButton");
+      var currentTime = document.getElementById("currentTime");
+      var duration = document.getElementById("duration");
+      var progressFill = document.getElementById("progressFill");
+      var progressThumb = document.getElementById("progressThumb");
+      var volumeButton = document.getElementById("volumeButton");
+      var volumeFill = document.getElementById("volumeFill");
+      var description = document.getElementById("description");
+      var videoControlsOverlay = document.getElementById(
+        "videoControlsOverlay"
+      );
+      var loadingIndicator = document.getElementById("loadingIndicator");
+      var errorMessage = document.getElementById("errorMessage");
+
+      var currentHotspotIdx = -1;
+      var isOverlayVisible = false;
+      var videoLoaded = false;
+
+      // Utility functions
+      function formatTime(seconds) {
+        if (isNaN(seconds) || seconds === null) return "0:00";
+        var minutes = Math.floor(seconds / 60);
+        var secs = Math.floor(seconds % 60);
+        return minutes + ":" + (secs < 10 ? "0" : "") + secs;
+      }
+
+      function fadeInVolume(video, duration) {
+        duration = duration || 1000;
+        var originalVolume = video.volume;
+        video.volume = 0;
+        var startTime = Date.now();
+
+        function fade() {
+          var elapsed = Date.now() - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          video.volume = originalVolume * progress;
+
+          if (progress < 1) {
             requestAnimationFrame(fade);
+          }
         }
-        
-        function fadeInHotspot(element, duration) {
-            duration = duration || 500;
-            element.style.opacity = '0';
-            element.style.visibility = 'visible';
-            element.style.transition = 'opacity ' + duration + 'ms ease-out';
-            
-            // Force reflow
-            element.offsetHeight;
-            element.style.opacity = '1';
+        requestAnimationFrame(fade);
+      }
+
+      function fadeInHotspot(element, duration) {
+        duration = duration || 500;
+        element.style.opacity = "0";
+        element.style.visibility = "visible";
+        element.style.transition = "opacity " + duration + "ms ease-out";
+
+        // Force reflow
+        element.offsetHeight;
+        element.style.opacity = "1";
+      }
+
+      function fadeOutHotspot(element, duration) {
+        duration = duration || 300;
+        element.style.transition = "opacity " + duration + "ms ease-out";
+        element.style.opacity = "0";
+
+        setTimeout(function () {
+          element.style.visibility = "hidden";
+        }, duration);
+      }
+
+      // Video event handlers
+      function onVideoLoaded() {
+        videoLoaded = true;
+        hideLoading();
+        hideError();
+
+        if (mainVideo.duration && !isNaN(mainVideo.duration)) {
+          duration.textContent = formatTime(mainVideo.duration);
+          volumeFill.style.width = mainVideo.volume * 100 + "%";
         }
-        
-        function fadeOutHotspot(element, duration) {
-            duration = duration || 300;
-            element.style.transition = 'opacity ' + duration + 'ms ease-out';
-            element.style.opacity = '0';
-            
-            setTimeout(function() {
-                element.style.visibility = 'hidden';
-            }, duration);
+      }
+
+      function hideLoading() {
+        loadingIndicator.style.display = "none";
+      }
+
+      function onVideoError() {
+        console.error("Video failed to load");
+        showError();
+      }
+
+      function showError() {
+        hideLoading();
+        errorMessage.style.display = "block";
+      }
+
+      function hideError() {
+        errorMessage.style.display = "none";
+      }
+
+      function retryVideo() {
+        hideError();
+        loadingIndicator.style.display = "block";
+        mainVideo.load();
+      }
+
+      // Main time update handler with hotspot logic
+      function handleTimeUpdate() {
+        if (!videoLoaded) return;
+
+        var currentVideoTime = mainVideo.currentTime;
+        var overlayIsVisible = overlayVideo.style.visibility === "visible";
+        var newHotspotIdx = -1;
+
+        // Update progress bar
+        if (mainVideo.duration && !isNaN(mainVideo.duration)) {
+          var progress = (currentVideoTime / mainVideo.duration) * 100;
+          progressFill.style.width = progress + "%";
+          progressThumb.style.left = progress + "%";
+          currentTime.textContent = formatTime(currentVideoTime);
         }
-        
-        // Video event handlers
-        function onVideoLoaded() {
-            videoLoaded = true;
-            hideLoading();
-            hideError();
-            
-            if (mainVideo.duration && !isNaN(mainVideo.duration)) {
-                duration.textContent = formatTime(mainVideo.duration);
-                volumeFill.style.width = (mainVideo.volume * 100) + '%';
+
+        // Only show hotspots if overlay is not visible
+        if (!overlayIsVisible) {
+          for (var i = 0; i < hotspots.length; i++) {
+            if (
+              currentVideoTime >= hotspots[i].startTime &&
+              currentVideoTime < hotspots[i].endTime
+            ) {
+              newHotspotIdx = i;
+              break;
             }
+          }
         }
-        
-        function hideLoading() {
-            loadingIndicator.style.display = 'none';
-        }
-        
-        function onVideoError() {
-            console.error('Video failed to load');
-            showError();
-        }
-        
-        function showError() {
-            hideLoading();
-            errorMessage.style.display = 'block';
-        }
-        
-        function hideError() {
-            errorMessage.style.display = 'none';
-        }
-        
-        function retryVideo() {
-            hideError();
-            loadingIndicator.style.display = 'block';
-            mainVideo.load();
-        }
-        
-        // Main time update handler with hotspot logic
-        function handleTimeUpdate() {
-            if (!videoLoaded) return;
-            
-            var currentVideoTime = mainVideo.currentTime;
-            var overlayIsVisible = overlayVideo.style.visibility === 'visible';
-            var newHotspotIdx = -1;
-            
-            // Update progress bar
-            if (mainVideo.duration && !isNaN(mainVideo.duration)) {
-                var progress = (currentVideoTime / mainVideo.duration) * 100;
-                progressFill.style.width = progress + '%';
-                progressThumb.style.left = progress + '%';
-                currentTime.textContent = formatTime(currentVideoTime);
-            }
-            
-            // Only show hotspots if overlay is not visible
-            if (!overlayIsVisible) {
-                for (var i = 0; i < hotspots.length; i++) {
-                    if (currentVideoTime >= hotspots[i].startTime && currentVideoTime < hotspots[i].endTime) {
-                        newHotspotIdx = i;
-                        break;
-                    }
-                }
-            }
-            
-            // Show/hide hotspot button
-            if (newHotspotIdx !== -1 && newHotspotIdx !== currentHotspotIdx && !overlayIsVisible) {
-                console.log('Showing hotspot:', newHotspotIdx);
-                fadeInHotspot(hotspotButton);
-                if (description) {
-                    description.innerHTML = hotspots[newHotspotIdx].text;
-                }
-                currentHotspotIdx = newHotspotIdx;
-            } else if (newHotspotIdx === -1 || overlayIsVisible) {
-                if (hotspotButton.style.visibility === 'visible') {
-                    fadeOutHotspot(hotspotButton);
-                }
-                if (description) {
-                    description.innerHTML = '';
-                }
-                if (!overlayIsVisible) {
-                    currentHotspotIdx = -1;
-                }
-            }
-        }
-        
-        // Hotspot click handler
-        function handleHotspotClick() {
-            console.log('Hotspot clicked! Current hotspot index:', currentHotspotIdx);
-            
-            if (currentHotspotIdx >= 0 && currentHotspotIdx < hotspots.length) {
-                var hotspot = hotspots[currentHotspotIdx];
-                console.log('Playing hotspot video:', hotspot.link);
-                
-                // Show close button
-                closeButton.style.visibility = 'visible';
-                
-                // Pause main video
-                mainVideo.pause();
-                
-                // Prepare overlay video
-                overlayVideo.pause();
-                overlayVideo.removeAttribute('src');
-                overlayVideo.style.visibility = 'hidden';
-                
-                setTimeout(function() {
-                    overlayVideo.setAttribute('src', hotspot.link);
-                    overlayVideo.load();
-                    overlayVideo.style.visibility = 'visible';
-                    isOverlayVisible = true;
-                    
-                    overlayVideo.addEventListener('canplay', function onCanPlay() {
-                        overlayVideo.removeEventListener('canplay', onCanPlay);
-                        overlayVideo.play().then(function() {
-                            console.log('Overlay video playback started');
-                        }).catch(function(error) {
-                            console.error('Error playing overlay video:', error);
-                        });
-                    });
-                }, 50);
-            }
-        }
-        
-        // Overlay video ended handler
-        function handleOverlayVideoEnded() {
-            console.log('Overlay video ended');
-            overlayVideo.style.visibility = 'hidden';
-            closeButton.style.visibility = 'hidden';
-            isOverlayVisible = false;
-            
-            // Resume main video
-            mainVideo.play();
-            fadeInVolume(mainVideo, 1000);
-        }
-        
-        // Close button handler
-        document.getElementById('closeButton').onclick = function() {
-            console.log('Close button clicked');
-            overlayVideo.pause();
-            overlayVideo.style.visibility = 'hidden';
-            closeButton.style.visibility = 'hidden';
-            isOverlayVisible = false;
-            
-            // Resume main video
-            mainVideo.play();
-            fadeInVolume(mainVideo, 1000);
-        };
-        
-        // Playback controls
-        function togglePlay() {
-            if (!videoLoaded) return;
-            
-            if (isOverlayVisible) {
-                if (overlayVideo.paused) {
-                    overlayVideo.play();
-                } else {
-                    overlayVideo.pause();
-                }
-                return;
-            }
-            
-            if (mainVideo.paused) {
-                mainVideo.play();
-            } else {
-                mainVideo.pause();
-            }
-        }
-        
-        function updatePlayButton() {
-            if (isOverlayVisible) {
-                playButton.textContent = overlayVideo.paused ? '▶' : '⏸';
-            } else {
-                playButton.textContent = mainVideo.paused ? '▶' : '⏸';
-            }
-        }
-        
-        function seekVideo(event) {
-            if (!videoLoaded || !mainVideo.duration) return;
-            if (isOverlayVisible) return; // Don't seek when overlay is visible
-            
-            var rect = event.target.getBoundingClientRect();
-            var clickX = event.clientX - rect.left;
-            var clickRatio = clickX / rect.width;
-            mainVideo.currentTime = clickRatio * mainVideo.duration;
-        }
-        
-        function skipTime(seconds) {
-            if (!videoLoaded) return;
-            
-            if (isOverlayVisible) {
-                overlayVideo.currentTime += seconds;
-            } else {
-                mainVideo.currentTime += seconds;
-            }
-        }
-        
-        function toggleMute() {
-            if (!videoLoaded) return;
-            
-            if (isOverlayVisible) {
-                overlayVideo.muted = !overlayVideo.muted;
-                volumeButton.textContent = overlayVideo.muted ? '🔇' : '🔊';
-            } else {
-                mainVideo.muted = !mainVideo.muted;
-                volumeButton.textContent = mainVideo.muted ? '🔇' : '🔊';
-            }
-        }
-        
-        function setVolume(event) {
-            if (!videoLoaded) return;
-            
-            var rect = event.target.getBoundingClientRect();
-            var clickX = event.clientX - rect.left;
-            var volume = clickX / rect.width;
-            volume = Math.max(0, Math.min(1, volume));
-            
-            if (isOverlayVisible) {
-                overlayVideo.volume = volume;
-            } else {
-                mainVideo.volume = volume;
-            }
-            
-            volumeFill.style.width = (volume * 100) + '%';
-        }
-        
-        function toggleFullscreen() {
-            try {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                } else {
-                    document.getElementById('video-player-subcontainer').requestFullscreen();
-                }
-            } catch (e) {
-                console.error('Fullscreen error:', e);
-            }
-        }
-        
-        function onVideoEnded() {
-            updatePlayButton();
+
+        // Show/hide hotspot button
+        if (
+          newHotspotIdx !== -1 &&
+          newHotspotIdx !== currentHotspotIdx &&
+          !overlayIsVisible
+        ) {
+          console.log("Showing hotspot:", newHotspotIdx);
+          fadeInHotspot(hotspotButton);
+          if (description) {
+            description.innerHTML = hotspots[newHotspotIdx].text;
+          }
+          currentHotspotIdx = newHotspotIdx;
+        } else if (newHotspotIdx === -1 || overlayIsVisible) {
+          if (hotspotButton.style.visibility === "visible") {
             fadeOutHotspot(hotspotButton);
+          }
+          if (description) {
+            description.innerHTML = "";
+          }
+          if (!overlayIsVisible) {
+            currentHotspotIdx = -1;
+          }
         }
-        
-        // Show controls on mobile touch
-        function showControlsTemporarily() {
-            videoControlsOverlay.style.opacity = '1';
-            setTimeout(function() {
-                videoControlsOverlay.style.opacity = '0';
-            }, 3000);
+      }
+
+      // Hotspot click handler
+      function handleHotspotClick() {
+        console.log(
+          "Hotspot clicked! Current hotspot index:",
+          currentHotspotIdx
+        );
+
+        if (currentHotspotIdx >= 0 && currentHotspotIdx < hotspots.length) {
+          var hotspot = hotspots[currentHotspotIdx];
+          console.log("Playing hotspot video:", hotspot.link);
+
+          // Show close button
+          closeButton.style.visibility = "visible";
+
+          // Pause main video
+          mainVideo.pause();
+
+          // Prepare overlay video
+          overlayVideo.pause();
+          overlayVideo.removeAttribute("src");
+          overlayVideo.style.visibility = "hidden";
+
+          setTimeout(function () {
+            overlayVideo.setAttribute("src", hotspot.link);
+            overlayVideo.load();
+            overlayVideo.style.visibility = "visible";
+            isOverlayVisible = true;
+
+            overlayVideo.addEventListener("canplay", function onCanPlay() {
+              overlayVideo.removeEventListener("canplay", onCanPlay);
+              overlayVideo
+                .play()
+                .then(function () {
+                  console.log("Overlay video playback started");
+                })
+                .catch(function (error) {
+                  console.error("Error playing overlay video:", error);
+                });
+            });
+          }, 50);
         }
-        
-        // Initialize
-        function init() {
-            // Set up overlay video events
-            overlayVideo.addEventListener('ended', handleOverlayVideoEnded);
-            overlayVideo.addEventListener('play', updatePlayButton);
-            overlayVideo.addEventListener('pause', updatePlayButton);
-            
-            // Mobile touch controls
-            document.getElementById('video-player-subcontainer').addEventListener('touchstart', showControlsTemporarily);
-            
-            // Try to load the video
-            if (mainVideo.readyState >= 1) {
-                onVideoLoaded();
-            } else {
-                setTimeout(function() {
-                    if (!videoLoaded) {
-                        showError();
-                    }
-                }, 10000);
-            }
+      }
+
+      // Overlay video ended handler
+      function handleOverlayVideoEnded() {
+        console.log("Overlay video ended");
+        overlayVideo.style.visibility = "hidden";
+        closeButton.style.visibility = "hidden";
+        isOverlayVisible = false;
+
+        // Resume main video
+        mainVideo.play();
+        fadeInVolume(mainVideo, 1000);
+      }
+
+      // Close button handler
+      document.getElementById("closeButton").onclick = function () {
+        console.log("Close button clicked");
+        overlayVideo.pause();
+        overlayVideo.style.visibility = "hidden";
+        closeButton.style.visibility = "hidden";
+        isOverlayVisible = false;
+
+        // Resume main video
+        mainVideo.play();
+        fadeInVolume(mainVideo, 1000);
+      };
+
+      // Playback controls
+      function togglePlay() {
+        if (!videoLoaded) return;
+
+        if (isOverlayVisible) {
+          if (overlayVideo.paused) {
+            overlayVideo.play();
+          } else {
+            overlayVideo.pause();
+          }
+          return;
         }
-        
-        // Start when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
+
+        if (mainVideo.paused) {
+          mainVideo.play();
         } else {
-            init();
+          mainVideo.pause();
         }
+      }
+
+      function updatePlayButton() {
+        if (isOverlayVisible) {
+          playButton.textContent = overlayVideo.paused ? "▶" : "⏸";
+        } else {
+          playButton.textContent = mainVideo.paused ? "▶" : "⏸";
+        }
+      }
+
+      function seekVideo(event) {
+        if (!videoLoaded || !mainVideo.duration) return;
+        if (isOverlayVisible) return; // Don't seek when overlay is visible
+
+        var rect = event.target.getBoundingClientRect();
+        var clickX = event.clientX - rect.left;
+        var clickRatio = clickX / rect.width;
+        mainVideo.currentTime = clickRatio * mainVideo.duration;
+      }
+
+      function skipTime(seconds) {
+        if (!videoLoaded) return;
+
+        if (isOverlayVisible) {
+          overlayVideo.currentTime += seconds;
+        } else {
+          mainVideo.currentTime += seconds;
+        }
+      }
+
+      function toggleMute() {
+        if (!videoLoaded) return;
+
+        if (isOverlayVisible) {
+          overlayVideo.muted = !overlayVideo.muted;
+          volumeButton.textContent = overlayVideo.muted ? "🔇" : "🔊";
+        } else {
+          mainVideo.muted = !mainVideo.muted;
+          volumeButton.textContent = mainVideo.muted ? "🔇" : "🔊";
+        }
+      }
+
+      function setVolume(event) {
+        if (!videoLoaded) return;
+
+        var rect = event.target.getBoundingClientRect();
+        var clickX = event.clientX - rect.left;
+        var volume = clickX / rect.width;
+        volume = Math.max(0, Math.min(1, volume));
+
+        if (isOverlayVisible) {
+          overlayVideo.volume = volume;
+        } else {
+          mainVideo.volume = volume;
+        }
+
+        volumeFill.style.width = volume * 100 + "%";
+      }
+
+      function toggleFullscreen() {
+        try {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            document
+              .getElementById("video-player-subcontainer")
+              .requestFullscreen();
+          }
+        } catch (e) {
+          console.error("Fullscreen error:", e);
+        }
+      }
+
+      function onVideoEnded() {
+        updatePlayButton();
+        fadeOutHotspot(hotspotButton);
+      }
+
+      // Show controls on mobile touch
+      function showControlsTemporarily() {
+        videoControlsOverlay.style.opacity = "1";
+        setTimeout(function () {
+          videoControlsOverlay.style.opacity = "0";
+        }, 3000);
+      }
+
+      // Initialize
+      function init() {
+        // Set up overlay video events
+        overlayVideo.addEventListener("ended", handleOverlayVideoEnded);
+        overlayVideo.addEventListener("play", updatePlayButton);
+        overlayVideo.addEventListener("pause", updatePlayButton);
+
+        // Mobile touch controls
+        document
+          .getElementById("video-player-subcontainer")
+          .addEventListener("touchstart", showControlsTemporarily);
+
+        // Try to load the video
+        if (mainVideo.readyState >= 1) {
+          onVideoLoaded();
+        } else {
+          setTimeout(function () {
+            if (!videoLoaded) {
+              showError();
+            }
+          }, 10000);
+        }
+      }
+
+      // Start when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+      // --- Play/Pause Icon Toggle ---
+      function updatePlayButtonIcon() {
+        var playIcon = document.getElementById("playIcon");
+        var pauseIcon = document.getElementById("pauseIcon");
+        if (!playIcon || !pauseIcon) return;
+        if (mainVideo.paused) {
+          playIcon.style.display = "inline";
+          pauseIcon.style.display = "none";
+        } else {
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "inline";
+        }
+      }
+      mainVideo.addEventListener("play", updatePlayButtonIcon);
+      mainVideo.addEventListener("pause", updatePlayButtonIcon);
+
+      // --- Volume Icon Toggle ---
+      function updateVolumeIcon() {
+        var muted = mainVideo.muted || mainVideo.volume === 0;
+        var volume = mainVideo.volume;
+        var mutedIcon = document.getElementById("volumeMutedIcon");
+        var lowIcon = document.getElementById("volumeLowIcon");
+        var highIcon = document.getElementById("volumeHighIcon");
+        if (!mutedIcon || !lowIcon || !highIcon) return;
+        mutedIcon.style.display = muted ? "inline" : "none";
+        lowIcon.style.display = !muted && volume < 0.5 ? "inline" : "none";
+        highIcon.style.display = !muted && volume >= 0.5 ? "inline" : "none";
+      }
+      mainVideo.addEventListener("volumechange", updateVolumeIcon);
+      mainVideo.addEventListener("play", updateVolumeIcon);
+      mainVideo.addEventListener("pause", updateVolumeIcon);
+
+      // --- Fullscreen Icon Toggle ---
+      function updateFullscreenIcon() {
+        var isFullscreen = !!document.fullscreenElement;
+        var enterIcon = document.getElementById("fullscreenEnterIcon");
+        var exitIcon = document.getElementById("fullscreenExitIcon");
+        if (!enterIcon || !exitIcon) return;
+        enterIcon.style.display = isFullscreen ? "none" : "inline";
+        exitIcon.style.display = isFullscreen ? "inline" : "none";
+      }
+      document.addEventListener("fullscreenchange", updateFullscreenIcon);
+
+      // Initialize icons on load
+      document.addEventListener("DOMContentLoaded", function () {
+        updatePlayButtonIcon();
+        updateVolumeIcon();
+        updateFullscreenIcon();
+      });
     </script>
-</body>
+  </body>
 </html>
