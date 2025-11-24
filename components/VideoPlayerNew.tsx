@@ -77,7 +77,8 @@ const HotspotVideo = () => {
           className={COMPONENT_STYLES.closeButton}
           style={{ visibility: "hidden" }}
         >
-          close
+          <span className="block sm:hidden">X</span>
+          <span className="hidden sm:block">close</span>
         </div>
         {/* HOTSPOT VIDEO */}
         {/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
@@ -110,7 +111,7 @@ const HotspotVideo = () => {
             alt="Helpful Hints"
             width={112}
             height={112}
-            className="w-18 h-18 max-w-[74px] max-h-[74px] sm:w-24 sm:h-24 sm:max-w-[99px] sm:max-h-[99px] md:w-28 md:h-28 md:max-w-none md:max-h-none"
+            className="w-20 h-20 max-w-[80px] max-h-[80px] sm:w-24 sm:h-24 sm:max-w-[99px] sm:max-h-[99px] md:w-28 md:h-28 md:max-w-none md:max-h-none"
           />
         </div>
 
